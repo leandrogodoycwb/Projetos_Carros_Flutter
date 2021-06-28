@@ -1,11 +1,13 @@
-import 'package:carros/pages/login_api.dart';
-import 'package:carros/pages/usuario.dart';
+import 'package:carros/pages/api_response.dart';
+import 'login_api.dart';
+import 'file:///C:/Users/ACER/AndroidStudioProjects/carros/lib/login/usuario.dart';
+import 'package:carros/utils/alert.dart';
 import 'package:carros/utils/nav.dart';
 import 'package:carros/widgets/app_button.dart';
 import 'package:carros/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 
-import 'home_page.dart';
+import '../carro/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -20,6 +22,8 @@ class _LoginPageState extends State<LoginPage> {
   final _tSenha = TextEditingController();
 
   final _focusSenha = FocusNode();
+
+  bool _showProgress = false;
 
   @override
   void initState() {
@@ -45,19 +49,20 @@ class _LoginPageState extends State<LoginPage> {
         child: ListView(
           children: <Widget>[
             AppText(
-                "Login",
+              "Login",
               "Digite o login",
               controller: _tLogin,
               validator: _validateLogin,
               keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
+              textInputAction: TextInputAction.next,
               nextFocus: _focusSenha,
             ),
             SizedBox(
-                height: 10,
+              height: 10,
             ),
             AppText(
-              "Senha", "Digite a senha",
+              "Senha",
+              "Digite a senha",
               controller: _tSenha,
               password: true,
               validator: _validateSenha,
@@ -68,9 +73,10 @@ class _LoginPageState extends State<LoginPage> {
               height: 20,
             ),
             AppButton(
-                "Login",
-              onPressed: _onClickLogin,
-            ),
+                    "Login",
+                    onPressed: _onClickLogin,
+              showProgress: _showProgress,
+                  )
           ],
         ),
       ),
@@ -78,21 +84,19 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _text(
-      String label,
-      String hint, {
-        bool password = false,
-        required TextEditingController controller,
-        FormFieldValidator<String>? validator,
-        TextInputType? keyboardType,
-        TextInputAction? textInputAction,
-        FocusNode? focusNode,
-        FocusNode? nextFocus,
-      }) {
+    String label,
+    String hint, {
+    bool password = false,
+    TextEditingController controller,
+    FormFieldValidator<String> validator,
+    TextInputType keyboardType,
+    TextInputAction textInputAction,
+    FocusNode focusNode,
+    FocusNode nextFocus,
+  }) {}
 
-  }
-
-  _onClickLogin() async{
-    if (!_formKey.currentState!.validate()) {
+  void _onClickLogin() async {
+    if (!_formKey.currentState.validate()) {
       return;
     }
 
@@ -100,25 +104,38 @@ class _LoginPageState extends State<LoginPage> {
     String senha = _tSenha.text;
 
     print("Login: $login, Senha: $senha");
-    Usuario user = await LoginApi.login(login, senha);
 
-    if(user != null) {
+    setState(() {
+      _showProgress = true;
+    });
+
+    ApiResponse response = await LoginApi.login(login, senha);
+
+    if (response.ok) {
+      Usuario user = response.result;
+
       print(">>> $user");
-      push(context, HomePage());
+
+      push(context, HomePage(), replace: true);
     } else {
-      print("Login incorreto");
+      alert(context, response.msg);
     }
+
+    setState(() {
+      _showProgress = false;
+    });
+
   }
 
-  String? _validateLogin(String? text) {
-    if (text!.isEmpty) {
+  String _validateLogin(String text) {
+    if (text.isEmpty) {
       return "Digite o login";
     }
     return null;
   }
 
-  String? _validateSenha(String? text) {
-    if (text!.isEmpty) {
+  String _validateSenha(String text) {
+    if (text.isEmpty) {
       return "Digite a senha";
     }
     if (text.length < 3) {

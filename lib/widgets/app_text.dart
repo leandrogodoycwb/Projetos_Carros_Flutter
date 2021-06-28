@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 class AppText extends StatelessWidget {
-  late String label;
-  late String hint;
+  String label;
+  String hint;
   bool password;
-  late TextEditingController controller;
+  TextEditingController controller;
 
-  FocusNode? _focusSenha;
+  FocusNode _focusSenha;
 
   AppText(
     this.label,
     this.hint, {
     this.password = false,
-    required this.controller,
+    this.controller,
     this.validator,
     this.keyboardType,
     this.textInputAction,
@@ -20,11 +20,11 @@ class AppText extends StatelessWidget {
     this.nextFocus,
   });
 
-  FormFieldValidator<String>? validator;
-  TextInputType? keyboardType;
-  TextInputAction? textInputAction;
-  FocusNode? focusNode;
-  FocusNode? nextFocus;
+  FormFieldValidator<String> validator;
+  TextInputType keyboardType;
+  TextInputAction textInputAction;
+  FocusNode focusNode;
+  FocusNode nextFocus;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class AppText extends StatelessWidget {
       keyboardType: keyboardType,
       textInputAction: textInputAction,
       focusNode: focusNode,
-      onFieldSubmitted: (String text) {
+      onFieldSubmitted: (text) {
         if (nextFocus != null) {
           FocusScope.of(context).requestFocus(_focusSenha);
         }
