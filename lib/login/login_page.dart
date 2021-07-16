@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:carros/login/login_bloc.dart';
 import 'package:carros/pages/api_response.dart';
 import 'login_api.dart';
 import 'file:///C:/Users/ACER/AndroidStudioProjects/carros/lib/login/usuario.dart';
@@ -6,7 +8,6 @@ import 'package:carros/utils/nav.dart';
 import 'package:carros/widgets/app_button.dart';
 import 'package:carros/widgets/app_text.dart';
 import 'package:flutter/material.dart';
-
 import '../carro/home_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -17,17 +18,24 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
+  final _bloc = LoginBloc();
+
   final _tLogin = TextEditingController();
 
   final _tSenha = TextEditingController();
 
   final _focusSenha = FocusNode();
 
-  bool _showProgress = false;
-
   @override
   void initState() {
     super.initState();
+
+    Future<Usuario> future = Usuario.get();
+    future.then((Usuario user) {
+    if (user != null) {
+      push(context, HomePage(), replace: true);
+      }
+    });
   }
 
   @override
@@ -72,11 +80,17 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(
               height: 20,
             ),
-            AppButton(
-                    "Login",
-                    onPressed: _onClickLogin,
-              showProgress: _showProgress,
-                  )
+            StreamBuilder<bool>(
+              stream: _bloc.stream,
+              initialData: false,
+              builder: (context, snapshot) {
+                return AppButton(
+                        "Login",
+                        onPressed: _onClickLogin,
+                  showProgress: snapshot.data,
+                      );
+              }
+            )
           ],
         ),
       ),
@@ -105,11 +119,7 @@ class _LoginPageState extends State<LoginPage> {
 
     print("Login: $login, Senha: $senha");
 
-    setState(() {
-      _showProgress = true;
-    });
-
-    ApiResponse response = await LoginApi.login(login, senha);
+    ApiResponse response = await _bloc.login(login, senha);
 
     if (response.ok) {
       Usuario user = response.result;
@@ -121,9 +131,6 @@ class _LoginPageState extends State<LoginPage> {
       alert(context, response.msg);
     }
 
-    setState(() {
-      _showProgress = false;
-    });
 
   }
 
@@ -143,4 +150,11 @@ class _LoginPageState extends State<LoginPage> {
     }
     return null;
   }
-}
+
+  @override
+  void dispose() {
+      super.dispose();
+
+      _bloc.dispose();
+    }
+  }

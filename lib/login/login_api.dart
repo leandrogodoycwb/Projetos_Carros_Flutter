@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:carros/pages/api_response.dart';
+import 'package:carros/utils/prefs.dart';
 import 'file:///C:/Users/ACER/AndroidStudioProjects/carros/lib/login/usuario.dart';
 import 'package:http/http.dart' as http;
 
@@ -27,7 +28,9 @@ class LoginApi {
     Map mapResponse = json.decode(response.body);
 
     if(response.statusCode == 200) {
-      final user = Usuario.FromJson(mapResponse);
+      final user = Usuario.fromJson(mapResponse);
+
+      user.save();
 
       return ApiResponse.ok(user);
     }
