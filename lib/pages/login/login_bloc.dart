@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:carros/login/usuario.dart';
 import 'package:carros/pages/api_response.dart';
 import 'login_api.dart';
 
