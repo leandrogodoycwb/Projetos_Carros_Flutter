@@ -6,7 +6,6 @@ import 'package:sqflite/sqflite.dart';
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper.getInstance();
   DatabaseHelper.getInstance();
-
   factory DatabaseHelper() => _instance;
 
   static Database _db;
@@ -20,7 +19,7 @@ class DatabaseHelper {
     return _db;
   }
 
-  Future _initDb() async {
+   _initDb() async {
     String databasesPath = await getDatabasesPath();
     String path = join(databasesPath, 'carros.db');
     print("db $path");

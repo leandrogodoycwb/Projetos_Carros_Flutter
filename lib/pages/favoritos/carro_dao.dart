@@ -6,7 +6,7 @@ import 'package:sqflite/sqflite.dart';
 // Data Access Object
 class CarroDAO {
 
-  Future<Database> get db => DatabaseHelper.getInstance().db;
+  Future<Database>get db => DatabaseHelper.getInstance().db;
 
   Future<int> save(Carro carro) async {
     var dbClient = await db;
