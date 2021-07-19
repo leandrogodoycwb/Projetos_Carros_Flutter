@@ -55,6 +55,7 @@ class _FavoritosPageState extends State<FavoritosPage>
     return _bloc.fetch();
   }
 
+
   @override
   void dispose() {
     super.dispose();
