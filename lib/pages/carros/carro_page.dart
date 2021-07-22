@@ -10,6 +10,9 @@ import 'package:carros/utils/alert.dart';
 import 'package:carros/utils/nav.dart';
 import 'package:carros/widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'video_page.dart';
 
 class CarroPage extends StatefulWidget {
   Carro carro;
@@ -53,11 +56,15 @@ class _CarroPageState extends State<CarroPage> {
           ),
           IconButton(
             icon: Icon(Icons.videocam),
-            onPressed: _onClickVideo,
-          ),
-          PopupMenuButton<String>(
-            onSelected: _onClickPopupMenu,
-            itemBuilder: (BuildContext context) {
+            onPressed: () {
+            _onClickVideo(context);
+               },
+               ),
+              PopupMenuButton<String>(
+            onSelected: (value) {
+              _onClickPopupMenu(value);
+              },
+              itemBuilder: (BuildContext context){
               return [
                 PopupMenuItem(
                   value: "Editar",
@@ -159,8 +166,6 @@ class _CarroPageState extends State<CarroPage> {
 
   void _onClickMapa() {}
 
-  void _onClickVideo() {}
-
   _onClickPopupMenu(String value) {
     switch (value) {
       case "Editar":
@@ -196,6 +201,18 @@ class _CarroPageState extends State<CarroPage> {
       alert(context, response.msg);
     }
   }
+
+  _onClickVideo(context) {
+  if (carro.urlVideo != null && carro.urlVideo.isNotEmpty) {
+   // launch(carro.urlVideo);
+    push(context, VideoPage(carro));
+  } else {
+    alert(
+      context,
+      "Este carro não possui nenhum video",
+    );
+  }
+}
 
   @override
   void dispose() {
