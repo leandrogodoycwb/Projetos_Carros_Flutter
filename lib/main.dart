@@ -10,6 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        // ignore: missing_required_param
         ChangeNotifierProvider<FavoritosModel>(
           // ignore: deprecated_member_use
           builder: (context) => FavoritosModel() ,
