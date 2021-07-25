@@ -1,6 +1,7 @@
 import 'dart:convert' as convert;
 
 import 'package:carros/utils/sql/entity.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Carro extends Entity {
   int id;
@@ -11,6 +12,13 @@ class Carro extends Entity {
   String urlVideo;
   String latitude;
   String longitude;
+
+  latlng () {
+    return LatLng(
+        latitude == null || latitude.isEmpty ? 0.0 : double.parse(latitude),
+        longitude == null || longitude.isEmpty ? 0.0 : double.parse(longitude)
+    );
+  }
 
   Carro(
       {this.id,

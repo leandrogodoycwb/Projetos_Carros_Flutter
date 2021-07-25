@@ -1,5 +1,6 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carros/pages/Mapa_Page.dart';
 import 'package:carros/pages/api_response.dart';
 import 'package:carros/pages/carros/carro.dart';
 import 'package:carros/pages/carros/carro_form_page.dart';
@@ -52,19 +53,21 @@ class _CarroPageState extends State<CarroPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.place),
-            onPressed: _onClickMapa,
+            onPressed: () {
+              _onClickMapa(context);
+            },
           ),
           IconButton(
             icon: Icon(Icons.videocam),
             onPressed: () {
-            _onClickVideo(context);
-               },
-               ),
-              PopupMenuButton<String>(
+              _onClickVideo(context);
+            },
+          ),
+          PopupMenuButton<String>(
             onSelected: (value) {
               _onClickPopupMenu(value);
-              },
-              itemBuilder: (BuildContext context){
+            },
+            itemBuilder: (BuildContext context) {
               return [
                 PopupMenuItem(
                   value: "Editar",
@@ -93,7 +96,7 @@ class _CarroPageState extends State<CarroPage> {
       child: ListView(
         children: <Widget>[
           CachedNetworkImage(
-              imageUrl:widget.carro.urlFoto ??
+              imageUrl: widget.carro.urlFoto ??
                   "http://www.livroandroid.com.br/livro/carros/esportivos/Ferrari_FF.png"),
           _bloco1(),
           Divider(),
@@ -164,7 +167,6 @@ class _CarroPageState extends State<CarroPage> {
     );
   }
 
-  void _onClickMapa() {}
 
   _onClickPopupMenu(String value) {
     switch (value) {
@@ -193,8 +195,8 @@ class _CarroPageState extends State<CarroPage> {
   void deletar() async {
     ApiResponse<bool> response = await CarrosApi.delete(carro);
 
-    if(response.ok) {
-      alert(context, "Carro deletado com sucesso", callback: (){
+    if (response.ok) {
+      alert(context, "Carro deletado com sucesso", callback: () {
         pop(context);
       });
     } else {
@@ -202,22 +204,33 @@ class _CarroPageState extends State<CarroPage> {
     }
   }
 
-  _onClickVideo(context) {
-  if (carro.urlVideo != null && carro.urlVideo.isNotEmpty) {
-   // launch(carro.urlVideo);
-    push(context, VideoPage(carro));
-  } else {
-    alert(
-      context,
-      "Este carro não possui nenhum video",
-    );
-  }
-}
+  void _onClickVideo(context) {
+    if (carro.urlVideo != null && carro.urlVideo.isNotEmpty) {
+      // launch(carro.urlVideo);
+      push(context, VideoPage(carro));
+    } else {
+      alert(
+        context,
+        "Este carro não possui nenhum video",
+      );
+    }
 
-  @override
-  void dispose() {
-    super.dispose();
-
-    _loripsumApiBloc.dispose();
   }
-}
+
+  void _onClickMapa(BuildContext context) {
+    if (carro.latitude != null && carro.longitude != null) {
+      push(context, MapaPage(carro));
+    } else {
+      alert(
+        context,
+        "Este carro não possui nenhuma lat/lng.",);
+    }
+  }
+
+    @override
+    void dispose() {
+      super.dispose();
+
+      _loripsumApiBloc.dispose();
+    }
+  }
