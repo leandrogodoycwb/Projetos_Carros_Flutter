@@ -6,6 +6,7 @@ import 'package:carros/pages/carros/carro_form_page.dart';
 import 'package:carros/pages/carros/carros_api.dart';
 import 'package:carros/pages/carros/loripsum_api.dart';
 import 'package:carros/pages/favoritos/favorito_service.dart';
+import 'package:carros/pages/mapa_page.dart';
 import 'package:carros/utils/alert.dart';
 import 'package:carros/utils/nav.dart';
 import 'package:carros/widgets/text.dart';
@@ -52,7 +53,7 @@ class _CarroPageState extends State<CarroPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.place),
-            onPressed: _onClickMapa,
+            onPressed: () { _onClickMapa(context); },
           ),
           IconButton(
             icon: Icon(Icons.videocam),
@@ -164,7 +165,7 @@ class _CarroPageState extends State<CarroPage> {
     );
   }
 
-  void _onClickMapa() {}
+//  void _onClickMapa() {}
 
   _onClickPopupMenu(String value) {
     switch (value) {
@@ -202,7 +203,7 @@ class _CarroPageState extends State<CarroPage> {
     }
   }
 
-  _onClickVideo(context) {
+  void _onClickVideo(context) {
   if (carro.urlVideo != null && carro.urlVideo.isNotEmpty) {
    // launch(carro.urlVideo);
     push(context, VideoPage(carro));
@@ -213,6 +214,18 @@ class _CarroPageState extends State<CarroPage> {
     );
   }
 }
+
+   _onClickMapa(context) {
+    if (carro.latitude != null && carro.longitude != null) {
+
+      push(context, MapaPage(carro));
+    } else {
+      alert(
+        context,
+        "Este carro não possui nenhuma latitude",
+      );
+    }
+  }
 
   @override
   void dispose() {
