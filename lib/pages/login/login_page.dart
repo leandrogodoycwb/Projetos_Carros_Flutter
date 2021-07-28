@@ -1,3 +1,4 @@
+import 'package:carros/firebase/firebase_service.dart';
 import 'package:carros/pages/api_response.dart';
 import 'package:carros/pages/carros/home_page.dart';
 import 'package:carros/pages/login/login_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:carros/utils/nav.dart';
 import 'package:carros/widgets/app_button.dart';
 import 'package:carros/widgets/app_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -79,12 +81,32 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: _onClickLogin,
                   showProgress: snapshot.data,
                 );
-              }
+              },
             ),
+            Container(
+              height: 46,
+              margin: EdgeInsets.only(top: 20),
+              child: GoogleSignInButton(
+                onPressed: _onClickGoogle,
+              ),
+            )
           ],
         ),
       ),
     );
+  }
+
+  _onClickGoogle() async {
+
+    final service = FirebaseService();
+    ApiResponse response = await service.loginGoogle();
+
+    if (response.ok) {
+      push(context, HomePage(), replace: true);
+    } else {
+      alert(context, response.msg);
+    }
+
   }
 
   void _onClickLogin() async {
@@ -133,4 +155,6 @@ class _LoginPageState extends State<LoginPage> {
 
     _bloc.dispose();
   }
+
+
 }
