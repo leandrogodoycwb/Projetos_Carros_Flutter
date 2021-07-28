@@ -119,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
 
     print("Login: $login, Senha: $senha");
 
-    ApiResponse<Usuario> response = await _bloc.login(login, senha);
+    ApiResponse response = await _bloc.login(login, senha);
 
     if (response.ok) {
 //      Usuario user = response.result;
