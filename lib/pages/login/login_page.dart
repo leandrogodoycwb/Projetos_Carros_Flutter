@@ -1,5 +1,6 @@
 import 'package:carros/firebase/firebase_service.dart';
 import 'package:carros/pages/api_response.dart';
+import 'package:carros/pages/cadastro/cadastro_page.dart';
 import 'package:carros/pages/carros/home_page.dart';
 import 'package:carros/pages/login/login_bloc.dart';
 import 'package:carros/pages/login/usuario.dart';
@@ -89,6 +90,22 @@ class _LoginPageState extends State<LoginPage> {
               child: GoogleSignInButton(
                 onPressed: _onClickGoogle,
               ),
+            ),
+            Container(
+              height: 46,
+              margin: EdgeInsets.only(top: 20),
+              child: InkWell(
+                onTap: _onClickCadastrar,
+                child: Text(
+                  "Cadastrar-se",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline
+                  ),
+                ),
+              ),
             )
           ],
         ),
@@ -149,12 +166,18 @@ class _LoginPageState extends State<LoginPage> {
     return null;
   }
 
+  void _onClickCadastrar() async {
+    push(context, CadastroPage(), replace: true);
+  }
+
   @override
   void dispose() {
     super.dispose();
 
     _bloc.dispose();
   }
+
+
 
 
 }
