@@ -1,11 +1,9 @@
 import 'package:carros/pages/carros/carro.dart';
 import 'package:carros/pages/carros/carros_listview.dart';
-import 'package:carros/pages/favoritos/favoritos_model.dart';
+import 'package:carros/pages/favoritos/favorito_service.dart';
 import 'package:carros/widgets/text_error.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../../main.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FavoritosPage extends StatefulWidget {
   @override
@@ -22,32 +20,31 @@ class _FavoritosPageState extends State<FavoritosPage>
   void initState() {
     super.initState();
 
-    FavoritosModel model = Provider.of<FavoritosModel>(context, listen: false);
-    model.getCarros();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
-    FavoritosModel model = Provider.of<FavoritosModel>(context);
+    return StreamBuilder<QuerySnapshot>(
+      stream: FavoritoService().stream,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return TextError("Não foi possível buscar os carros");
+        }
 
-    List<Carro> carros = model.carros;
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
 
-    if(carros.isEmpty) {
-      return Center(
-        child: Text(
-          "Não foi possível buscar os carros", style: TextStyle(fontSize: 20),),
-      );
-    }
+        List<Carro> carros = snapshot.data.documents.map((DocumentSnapshot document) {
+          return Carro.fromMap(document.data);
+        }).toList();
 
-        return RefreshIndicator(
-          onRefresh: _onRefresh,
-          child: CarrosListView(carros),
+        return CarrosListView(carros);
+      },
     );
-  }
-
-  Future<void> _onRefresh() {
-    return Provider.of<FavoritosModel>(context, listen: false).getCarros();
   }
 }

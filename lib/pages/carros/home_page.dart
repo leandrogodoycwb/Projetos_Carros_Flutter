@@ -5,6 +5,7 @@ import 'package:carros/pages/carros/carros_page.dart';
 import 'package:carros/pages/favoritos/favoritos_page.dart';
 import 'package:carros/utils/nav.dart';
 import 'package:carros/utils/prefs.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,13 +25,11 @@ class _HomePageState extends State<HomePage>
   }
 
   _initTabs() async {
-
     _tabController = TabController(length: 4, vsync: this);
 
     _tabController.index = await Prefs.getInt("tabIdx");
 
-    _tabController.addListener((){
-
+    _tabController.addListener(() {
       Prefs.setInt("tabIdx", _tabController.index);
     });
   }

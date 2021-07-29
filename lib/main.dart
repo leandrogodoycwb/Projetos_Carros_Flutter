@@ -1,5 +1,6 @@
-import 'package:carros/pages/favoritos/favoritos_model.dart';
+
 import 'package:carros/splash_page.dart';
+import 'package:carros/utils/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,18 +11,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // ignore: missing_required_param
-        ChangeNotifierProvider<FavoritosModel>(
-          // ignore: deprecated_member_use
-          builder: (context) => FavoritosModel() ,
-        )
+        Provider<EventBus>(
+          builder: (context) => EventBus(),
+          dispose: (context, bus) => bus.dispose(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primarySwatch: Colors.blue,
-          brightness: Brightness.light,
-          scaffoldBackgroundColor: Colors.white
+            primarySwatch: Colors.blue,
+            brightness: Brightness.light,
+            scaffoldBackgroundColor: Colors.white
         ),
         home: SplashPage(),
       ),
